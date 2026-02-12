@@ -29,6 +29,8 @@ import { registerCheckpoint } from "./tools/checkpoint.js";
 import { registerSessionHealth } from "./tools/session-health.js";
 // Category 9: Error Recovery
 import { registerLogCorrection } from "./tools/log-correction.js";
+// Category 9b: Pattern Learning
+import { registerCheckPatterns } from "./tools/check-patterns.js";
 // Category 10: Workspace Hygiene
 import { registerAuditWorkspace } from "./tools/audit-workspace.js";
 // Category 11: Cross-Session Continuity
@@ -45,6 +47,7 @@ import { registerSearchHistory } from "./tools/search-history.js";
 import { registerTimeline } from "./tools/timeline-view.js";
 import { registerScanSessions } from "./tools/scan-sessions.js";
 import { registerGenerateScorecard } from "./tools/generate-scorecard.js";
+import { registerSearchContracts } from "./tools/search-contracts.js";
 import { registerEstimateCost } from "./tools/estimate-cost.js";
 
 // Validate related projects from config
@@ -93,6 +96,7 @@ const toolRegistry: Array<[string, RegisterFn]> = [
   ["checkpoint", registerCheckpoint],
   ["check_session_health", registerSessionHealth],
   ["log_correction", registerLogCorrection],
+  ["check_patterns", registerCheckPatterns],
   ["audit_workspace", registerAuditWorkspace],
   ["session_handoff", registerSessionHandoff],
   ["what_changed", registerWhatChanged],
@@ -105,6 +109,7 @@ const toolRegistry: Array<[string, RegisterFn]> = [
   ["scan_sessions", registerScanSessions],
   ["generate_scorecard", registerGenerateScorecard],
   ["estimate_cost", registerEstimateCost],
+  ["search_contracts", registerSearchContracts],
 ];
 
 let registered = 0;

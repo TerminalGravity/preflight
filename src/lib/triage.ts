@@ -35,6 +35,8 @@ export interface TriageConfig {
   crossServiceKeywords?: string[];
   strictness?: string;       // 'relaxed' | 'standard' | 'strict'
   relatedAliases?: string[];
+  /** Number of matched correction patterns — boosts level to at least ambiguous. */
+  patternMatchCount?: number;
 }
 
 // ── Constants ──────────────────────────────────────────────────────────────

@@ -32,6 +32,7 @@ const STANDARD_TOOLS = new Set([
   "checkpoint",
   "check_session_health",
   "log_correction",
+  "check_patterns",
   "audit_workspace",
   "session_handoff",
   "what_changed",
@@ -40,6 +41,8 @@ const STANDARD_TOOLS = new Set([
   "session_stats",
   "prompt_score",
   "generate_scorecard",
+  // Contract registry
+  "search_contracts",
   // Timeline tools — local embeddings, zero config
   "onboard_project",
   "search_history",
