@@ -1,6 +1,11 @@
 // =============================================================================
 // Profile system — controls which tools are registered
 // =============================================================================
+// minimal:  No vectors. Pure JSONL parsing + git state. ~5MB install.
+// standard: Local embeddings (Xenova) + LanceDB. Auto-downloads model on
+//           first use. Zero config. ~200MB after model download. DEFAULT.
+// full:     Everything in standard + OpenAI option for higher quality embeddings.
+// =============================================================================
 
 export type Profile = "minimal" | "standard" | "full";
 
@@ -11,6 +16,8 @@ const MINIMAL_TOOLS = new Set([
   "prompt_score",
 ]);
 
+// Standard IS the default — includes embeddings + timeline.
+// LanceDB is embedded (no server), Xenova downloads model silently on first use.
 const STANDARD_TOOLS = new Set([
   // All 14 prompt discipline tools
   "scope_work",
@@ -26,27 +33,28 @@ const STANDARD_TOOLS = new Set([
   "session_handoff",
   "what_changed",
   "verify_completion",
-  // New lightweight tools
+  // Lightweight tools
   "session_stats",
   "prompt_score",
   "generate_scorecard",
-]);
-
-const FULL_TOOLS = new Set([
-  ...STANDARD_TOOLS,
-  // Timeline tools (need LanceDB)
+  // Timeline tools — local embeddings, zero config
   "onboard_project",
   "search_history",
   "timeline_view",
   "scan_sessions",
-  "generate_scorecard",
+]);
+
+// Full = standard + OpenAI embedding option (needs API key)
+// Identical tool set — the difference is config, not features.
+const FULL_TOOLS = new Set([
+  ...STANDARD_TOOLS,
 ]);
 
 export function getProfile(): Profile {
   const env = process.env.PROMPT_DISCIPLINE_PROFILE?.toLowerCase();
   if (env === "minimal") return "minimal";
-  if (env === "standard") return "standard";
-  return "full";
+  if (env === "full") return "full";
+  return "standard"; // default — includes everything with local embeddings
 }
 
 export function isToolEnabled(toolName: string): boolean {
