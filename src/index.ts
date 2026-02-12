@@ -6,8 +6,11 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { isToolEnabled, getProfile } from "./profiles.js";
+import { getConfig, hasPreflightConfig } from "./lib/config.js";
 import { existsSync } from "fs";
 
+// Main entry point
+import { registerPreflightCheck } from "./tools/preflight-check.js";
 // Category 1: Plans
 import { registerScopeWork } from "./tools/scope-work.js";
 // Category 2: Clarification
@@ -43,28 +46,30 @@ import { registerTimeline } from "./tools/timeline-view.js";
 import { registerScanSessions } from "./tools/scan-sessions.js";
 import { registerGenerateScorecard } from "./tools/generate-scorecard.js";
 
-// Parse and validate PREFLIGHT_RELATED environment variable
+// Validate related projects from config
 function validateRelatedProjects(): void {
-  const related = process.env.PREFLIGHT_RELATED;
-  if (!related) return;
+  const config = getConfig();
+  const projects = config.related_projects;
+  
+  if (projects.length === 0) return;
 
-  const projects = related.split(",").map(p => p.trim()).filter(Boolean);
   const invalid: string[] = [];
   
-  for (const projectPath of projects) {
-    if (!existsSync(projectPath)) {
-      invalid.push(projectPath);
+  for (const project of projects) {
+    if (!existsSync(project.path)) {
+      invalid.push(`${project.alias} (${project.path})`);
     }
   }
   
   if (invalid.length > 0) {
-    process.stderr.write(`preflight-dev: warning - PREFLIGHT_RELATED contains invalid paths: ${invalid.join(", ")}\n`);
-  } else if (projects.length > 0) {
+    process.stderr.write(`preflight-dev: warning - related projects contain invalid paths: ${invalid.join(", ")}\n`);
+  } else {
     process.stderr.write(`preflight-dev: related projects: ${projects.length} configured\n`);
   }
 }
 
-// Validate related projects on startup
+// Load config and validate related projects on startup
+const config = getConfig();
 validateRelatedProjects();
 
 const profile = getProfile();
@@ -77,6 +82,7 @@ const server = new McpServer({
 type RegisterFn = (server: McpServer) => void;
 
 const toolRegistry: Array<[string, RegisterFn]> = [
+  ["preflight_check", registerPreflightCheck],
   ["scope_work", registerScopeWork],
   ["clarify_intent", registerClarifyIntent],
   ["enrich_agent_task", registerEnrichAgentTask],
@@ -107,7 +113,8 @@ for (const [name, register] of toolRegistry) {
   }
 }
 
-process.stderr.write(`preflight: profile=${profile}, tools=${registered}\n`);
+const configSource = hasPreflightConfig() ? ".preflight/" : "env vars";
+process.stderr.write(`preflight: profile=${profile}, tools=${registered}, config=${configSource}\n`);
 
 // Graceful shutdown
 function shutdown() {

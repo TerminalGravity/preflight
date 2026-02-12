@@ -7,9 +7,10 @@
 // full:     Everything in standard + OpenAI option for higher quality embeddings.
 // =============================================================================
 
-export type Profile = "minimal" | "standard" | "full";
+import { getConfig, type Profile } from "./lib/config.js";
 
 const MINIMAL_TOOLS = new Set([
+  "preflight_check",
   "clarify_intent",
   "check_session_health",
   "session_stats",
@@ -19,6 +20,8 @@ const MINIMAL_TOOLS = new Set([
 // Standard IS the default — includes embeddings + timeline.
 // LanceDB is embedded (no server), Xenova downloads model silently on first use.
 const STANDARD_TOOLS = new Set([
+  // Main entry point
+  "preflight_check",
   // All 14 prompt discipline tools
   "scope_work",
   "clarify_intent",
@@ -51,10 +54,7 @@ const FULL_TOOLS = new Set([
 ]);
 
 export function getProfile(): Profile {
-  const env = process.env.PROMPT_DISCIPLINE_PROFILE?.toLowerCase();
-  if (env === "minimal") return "minimal";
-  if (env === "full") return "full";
-  return "standard"; // default — includes everything with local embeddings
+  return getConfig().profile;
 }
 
 export function isToolEnabled(toolName: string): boolean {
