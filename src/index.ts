@@ -31,10 +31,15 @@ import { registerSessionHandoff } from "./tools/session-handoff.js";
 import { registerWhatChanged } from "./tools/what-changed.js";
 // Category 12: Verification
 import { registerVerifyCompletion } from "./tools/verify-completion.js";
+// Timeline: Project Intelligence
+import { registerOnboardProject } from "./tools/onboard-project.js";
+import { registerSearchHistory } from "./tools/search-history.js";
+import { registerTimeline } from "./tools/timeline-view.js";
+import { registerScanSessions } from "./tools/scan-sessions.js";
 
 const server = new McpServer({
   name: "prompt-coach",
-  version: "2.1.0",
+  version: "3.0.0",
 });
 
 // Register all 12 category tools (14 tools total)
@@ -51,6 +56,12 @@ registerAuditWorkspace(server);     // 10. Workspace Hygiene
 registerSessionHandoff(server);     // 11a. Cross-Session Continuity
 registerWhatChanged(server);        // 11b. Cross-Session Continuity
 registerVerifyCompletion(server);   // 12. Verification
+
+// Timeline tools
+registerOnboardProject(server);     // Project onboarding + indexing
+registerSearchHistory(server);      // Semantic search across history
+registerTimeline(server);           // Chronological timeline view
+registerScanSessions(server);       // Live session scanning
 
 // Graceful shutdown
 function shutdown() {
