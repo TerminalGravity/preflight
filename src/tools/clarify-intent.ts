@@ -5,7 +5,8 @@ import { findWorkspaceDocs, PROJECT_DIR } from "../lib/files.js";
 import { searchSemantic } from "../lib/timeline-db.js";
 import { getRelatedProjects } from "../lib/config.js";
 import { existsSync, readFileSync } from "fs";
-import { join, basename } from "path";
+import { join, basename, resolve } from "path";
+import { loadAllContracts, searchContracts, formatContracts } from "../lib/contracts.js";
 
 /** Parse test failures from common report formats without fragile shell pipelines */
 function getTestFailures(): string {
@@ -175,6 +176,14 @@ export function registerClarifyIntent(server: McpServer): void {
         hasTestFailures,
         hasDirtyFiles: dirtyCount > 0,
       });
+
+      // Check contracts FIRST (fast, no vector search)
+      const contractDirs = [resolve(PROJECT_DIR), ...getRelatedProjects()];
+      const allContracts = loadAllContracts(contractDirs);
+      const matchedContracts = searchContracts(user_message, allContracts);
+      if (matchedContracts.length > 0) {
+        sections.push(`## Matching Contracts\n${formatContracts(matchedContracts, 8)}`);
+      }
 
       // Search for cross-project context
       const crossProjectContext = await searchCrossProjectContext(user_message);

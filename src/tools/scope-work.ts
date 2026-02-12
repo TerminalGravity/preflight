@@ -8,6 +8,7 @@ import { getRelatedProjects } from "../lib/config.js";
 import { now } from "../lib/state.js";
 import { existsSync } from "fs";
 import { join, normalize, resolve, basename } from "path";
+import { loadAllContracts, searchContracts, formatContracts } from "../lib/contracts.js";
 
 const STOP_WORDS = new Set([
   "the", "and", "for", "with", "from", "that", "this", "should", "would", "could",
@@ -163,6 +164,11 @@ export function registerScopeWork(server: McpServer): void {
         ? docEntries.map(([name]) => `- \`${name}\``).join("\n")
         : "- (none found)";
 
+      // Check contracts FIRST (fast, no vector search)
+      const contractDirs = [resolve(PROJECT_DIR), ...getRelatedProjects()];
+      const allContracts = loadAllContracts(contractDirs);
+      const matchedContracts = searchContracts(task, allContracts);
+
       // Get cross-project context
       const relatedContext = await searchRelatedProjectContext(task);
 
@@ -197,6 +203,7 @@ ${docLines}
 ${claudeMd ? "- `CLAUDE.md` exists (project instructions)" : ""}
 ${agentsMd ? "- `.claude/AGENTS.md` exists" : ""}
 
+${matchedContracts.length > 0 ? `## 📑 Matching Contracts\n${formatContracts(matchedContracts, 8)}\n` : ""}
 ${relatedContext.length > 0 ? `## 🔗 Related Project Context\n${relatedContext.join("\n")}\n` : ""}
 ---
 

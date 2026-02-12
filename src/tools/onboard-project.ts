@@ -15,6 +15,7 @@ import { findSessionDirs, parseAllSessions } from "../lib/session-parser.js";
 import { extractGitHistory } from "../lib/git-extractor.js";
 import { createEmbeddingProvider } from "../lib/embeddings.js";
 import { execSync } from "child_process";
+import { extractAndSaveContracts } from "../lib/contracts.js";
 
 const GIT_DEPTH_MAP: Record<string, number | undefined> = {
   all: undefined,
@@ -194,7 +195,15 @@ export function registerOnboardProject(server: McpServer) {
       await insertEvents(allEvents, project_dir);
       progress.push("💾 Inserted into database");
 
-      // 8. Summary
+      // 8. Extract contracts
+      try {
+        const contractResult = extractAndSaveContracts(project_dir);
+        progress.push(`📑 Extracted ${contractResult.count} contracts (types, interfaces, routes, schemas)`);
+      } catch (err) {
+        progress.push(`⚠️ Contract extraction failed: ${err}`);
+      }
+
+      // 9. Summary
       const prompts = allEvents.filter((e: any) => e.type === "prompt").length;
       const commits = allEvents.filter((e: any) => e.type === "commit").length;
       const corrections = allEvents.filter((e: any) => e.type === "correction").length;
