@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // =============================================================================
-// prompt-discipline init — Zero-config MCP server setup for Claude Code
+// preflight-dev init — Zero-config MCP server setup for Claude Code
 // =============================================================================
 
 import { createInterface } from "node:readline";
@@ -22,7 +22,7 @@ interface McpConfig {
 }
 
 async function main(): Promise<void> {
-  console.log("\n🧠 prompt-discipline — MCP server setup\n");
+  console.log("\n✈️ preflight-dev — MCP server setup\n");
 
   const mcpPath = join(process.cwd(), ".mcp.json");
   let config: McpConfig;
@@ -64,24 +64,24 @@ async function main(): Promise<void> {
     }
   }
 
-  config.mcpServers["prompt-discipline"] = {
+  config.mcpServers["preflight"] = {
     command: "npx",
-    args: ["-y", "prompt-discipline@latest"],
+    args: ["-y", "preflight-dev@latest"],
     env,
   };
 
   // For the actual server entry point, we need to point to index.ts via tsx
   // But npx will resolve the bin entry which is the init script
   // So use a different approach: command runs the server
-  config.mcpServers["prompt-discipline"] = {
+  config.mcpServers["preflight"] = {
     command: "npx",
-    args: ["-y", "tsx", "node_modules/prompt-discipline/src/index.ts"],
+    args: ["-y", "tsx", "node_modules/preflight-dev/src/index.ts"],
     env,
   };
 
   await writeFile(mcpPath, JSON.stringify(config, null, 2) + "\n");
 
-  console.log(`\n✅ prompt-discipline added! (profile: ${profile})`);
+  console.log(`\n✅ preflight-dev added! (profile: ${profile})`);
   console.log("Restart Claude Code to connect.\n");
 
   rl.close();

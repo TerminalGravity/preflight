@@ -1,11 +1,11 @@
 {
-  "name": "prompt-discipline",
+  "name": "preflight-dev",
   "version": "3.1.0",
-  "description": "18-tool MCP server for Claude Code: prevent vague prompts, search session history with vector search",
+  "description": "Preflight checks for AI coding agents — catch vague prompts, surface missing context, search session history",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "prompt-discipline": "./bin/cli.js"
+    "preflight-dev": "./bin/cli.js"
   },
   "engines": {
     "node": ">=18"
@@ -27,7 +27,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/TerminalGravity/prompt-discipline"
+    "url": "https://github.com/TerminalGravity/preflight-dev"
   },
   "license": "MIT",
   "author": "Jack Felke",

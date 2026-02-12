@@ -1,6 +1,6 @@
 {
-  "name": "prompt-discipline",
-  "description": "Prevents rapid-fire shorthand prompts from wasting tokens and causing wrong outputs. Includes hooks that catch vague instructions, commands for common workflows, and a prompt-coach skill that enriches ambiguous requests with project context.",
+  "name": "preflight-dev",
+  "description": "Preflight checks for AI coding agents — catch vague prompts, surface missing context, search session history",
   "version": "1.0.0",
   "author": {
     "name": "Jack Felke",

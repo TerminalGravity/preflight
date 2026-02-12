@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, sta
 import { join } from "path";
 import { PROJECT_DIR } from "./files.js";
 
-export const STATE_DIR = join(PROJECT_DIR, ".claude", "prompt-coach-state");
+export const STATE_DIR = join(PROJECT_DIR, ".claude", "preflight-state");
 
 /** Max log file size in bytes (5 MB). Triggers rotation. */
 const MAX_LOG_SIZE = 5 * 1024 * 1024;

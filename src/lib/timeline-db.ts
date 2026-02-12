@@ -63,7 +63,7 @@ export interface TimelineConfig {
 
 // --- Paths ---
 
-const BASE_DIR = join(homedir(), ".prompt-discipline");
+const BASE_DIR = join(homedir(), ".preflight-dev");
 const DB_PATH = join(BASE_DIR, "timeline.lance");
 const CONFIG_PATH = join(BASE_DIR, "config.json");
 

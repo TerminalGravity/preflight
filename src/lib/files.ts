@@ -41,7 +41,7 @@ export function findWorkspaceDocs(opts?: { metadataOnly?: boolean }): Record<str
         const full = join(dir, entry);
         const rel = prefix ? `${prefix}/${entry}` : entry;
         const stat = statSync(full);
-        if (stat.isDirectory() && !entry.startsWith(".") && !entry.includes("node_modules") && entry !== "prompt-coach-state") {
+        if (stat.isDirectory() && !entry.startsWith(".") && !entry.includes("node_modules") && entry !== "preflight-state") {
           scanDir(full, rel, depth + 1);
         } else if (entry.endsWith(".md") && stat.size < 50000) {
           docs[rel] = {
